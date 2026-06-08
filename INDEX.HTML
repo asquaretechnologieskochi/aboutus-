@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asquare</title>
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Fonts: Inter + Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: transparent;
+            position: relative;
+            min-height: 100vh;
+            color: #2d3e4f;
+            line-height: 1.6;
+        }
+        #spider-canvas {
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.45;
+        }
+        .content-wrapper {
+            position: relative;
+            z-index: 10;
+        }
+        .pink-primary { color: #b13e6b !important; }
+        .bg-pink-soft {
+            background: rgba(250, 235, 240, 0.8);
+            backdrop-filter: blur(4px);
+        }
+        .section-padding {
+            padding: 5rem 0;
+        }
+        .section-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: #832b52;
+            margin-bottom: 2rem;
+            position: relative;
+            display: inline-block;
+            letter-spacing: -0.02em;
+        }
+        .section-title:after {
+            content: '';
+            display: block;
+            width: 70px;
+            height: 3px;
+            background: #b13e6b;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+        .hero-video-wrapper {
+            position: relative;
+            width: 100%;
+            height: 80vh;
+            min-height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            overflow: hidden;
+            border-bottom: 1px solid #b13e6b30;
+        }
+        .hero-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+        }
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(30, 10, 20, 0.65), rgba(40, 15, 25, 0.7));
+            z-index: 2;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 3;
+            padding: 2rem;
+            max-width: 1000px;
+        }
+        .hero-content h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 3.8rem;
+            font-weight: 700;
+            text-shadow: 0 4px 18px rgba(0,0,0,0.5);
+            letter-spacing: -0.02em;
+            margin: 0 auto 1.5rem;
+            line-height: 1.2;
+        }
+        .hero-content .quote-sub {
+            font-size: 1.8rem;
+            font-weight: 300;
+            opacity: 0.9;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+            border-top: 2px solid #b13e6b;
+            display: inline-block;
+            padding-top: 1.2rem;
+        }
+        .ceo-card {
+            background: rgba(255, 250, 250, 0.9);
+            backdrop-filter: blur(6px);
+            border-radius: 32px;
+            box-shadow: 0 20px 30px -10px rgba(120, 40, 70, 0.15);
+            padding: 2.5rem;
+            border: 1px solid #ffdbe8;
+        }
+        .ceo-img-square {
+            width: 240px;
+            height: 240px;
+            object-fit: cover;
+            border-radius: 20px;
+            border: 4px solid #b13e6b;
+            box-shadow: 0 12px 25px rgba(177, 62, 107, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .ceo-img-square:hover {
+            transform: scale(1.02);
+            box-shadow: 0 22px 35px rgba(177, 62, 107, 0.4);
+        }
+        .linkedin-professional {
+            background-color: #b13e6b;
+            color: white;
+            padding: 0.7rem 2.2rem;
+            border-radius: 60px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.2rem;
+            transition: 0.25s;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 6px 16px rgba(177,62,107,0.25);
+            border: none;
+        }
+        .linkedin-professional i {
+            font-size: 1.9rem;
+        }
+        .linkedin-professional:hover {
+            background-color: #8f3153;
+            color: white;
+            box-shadow: 0 12px 28px rgba(177,62,107,0.45);
+            transform: translateY(-3px);
+        }
+        .card-value {
+            background: white;
+            border-radius: 24px;
+            padding: 2rem 1rem;
+            height: 100%;
+            box-shadow: 0 8px 20px rgba(190, 100, 130, 0.08);
+            border: 1px solid #f3cedc;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        .card-value:hover {
+            transform: translateY(-5px);
+            border-color: #b13e6b;
+            box-shadow: 0 14px 30px rgba(177,62,107,0.12);
+        }
+        .card-value i {
+            font-size: 2.8rem;
+            color: #b13e6b;
+            margin-bottom: 1rem;
+        }
+        .stats-container {
+            background: rgba(255, 248, 250, 0.9);
+            backdrop-filter: blur(4px);
+            border-radius: 40px;
+            padding: 3.5rem 2rem;
+            box-shadow: 0 20px 35px -8px rgba(120, 50, 70, 0.1);
+            border: 1px solid #f6d7e2;
+        }
+        .stat-item {
+            background: white;
+            border-radius: 24px;
+            padding: 2rem 0.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            border: 1px solid #f4d2df;
+        }
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #b13e6b;
+            line-height: 1.2;
+        }
+        .stat-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #5d3c4b;
+            letter-spacing: 1px;
+        }
+        .team-btn {
+            background: transparent;
+            border: 2px solid #b13e6b;
+            color: #b13e6b;
+            font-weight: 600;
+            padding: 0.8rem 2.8rem;
+            border-radius: 60px;
+            font-size: 1.25rem;
+            text-transform: none;
+            letter-spacing: 0.5px;
+            transition: 0.2s;
+            min-width: 220px;
+            backdrop-filter: blur(2px);
+            box-shadow: 0 4px 10px rgba(177,62,107,0.1);
+        }
+        .team-btn:hover {
+            background: #b13e6b;
+            color: white;
+            border-color: #b13e6b;
+            box-shadow: 0 12px 22px rgba(177,62,107,0.3);
+            transform: scale(1.02);
+        }
+        .footer-professional {
+            background: #37242e;
+            color: #f2dde6;
+            padding: 3rem 0;
+        }
+        .footer-professional a {
+            color: #fbc1d4;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+        .footer-professional a:hover {
+            color: white;
+            text-decoration: underline;
+        }
+        .blockquote-professional {
+            font-size: 1.3rem;
+            font-style: normal;
+            font-weight: 400;
+            color: #4f2c3b;
+            border-left: 5px solid #b13e6b;
+            padding: 0.8rem 0 0.8rem 2rem;
+            background: rgba(255,255,255,0.3);
+            border-radius: 0 16px 16px 0;
+        }
+        .mission-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(4px);
+            border-radius: 28px;
+            padding: 2.2rem;
+            border-left: 6px solid #b13e6b;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.02);
+            height: 100%;
+        }
+        .text-dark-muted {
+            color: #3a2e34;
+        }
+        .col-md-2-4 { flex: 0 0 20%; max-width: 20%; }
+        @media (max-width: 768px) { .col-md-2-4 { flex: 0 0 50%; max-width: 50%; } }
+    </style>
+</head>
+<body>
+    <canvas id="spider-canvas"></canvas>
+    <div class="content-wrapper">
+
+        <!-- HERO WITH VIDEO BACKGROUND -->
+        <section class="hero-video-wrapper">
+            <video class="hero-video" autoplay muted loop playsinline>
+                <source src="BG.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <h1>Turning Aspirations<br>Into Achievements</h1>
+                <div class="quote-sub">— ABOUT US—</div>
+            </div>
+        </section>
+
+        <!-- WHO WE ARE -->
+        <section class="section-padding">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <h2 class="section-title">Who We Are – Innovating Beyond Boundaries</h2>
+                        <div class="p-4" style="background: rgba(255,255,255,0.7); backdrop-filter: blur(4px); border-radius: 30px;">
+                            <p class="lead fs-5" style="color: #4b2d3a;">At Asquare Technologies, we are pioneers in delivering cutting‑edge digital solutions that transform businesses and careers. Founded on the principles of innovation, integrity, and impact, we harness the power of technology to solve real‑world challenges. Our team of passionate engineers, designers, and strategists works collaboratively to craft products and programs that are not just functional, but truly revolutionary.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CEO & CO-FOUNDER MESSAGE -->
+        <section class="section-padding bg-pink-soft">
+            <div class="container">
+
+                <!-- Ashik Card -->
+                <div class="ceo-card mb-5">
+                    <div class="row align-items-center g-5">
+                        <div class="col-md-4 text-center">
+                            <img src="ashikvm.png" alt="Ashik VM" class="ceo-img-square">
+                            <h4 class="mt-4 fw-bold" style="color: #832b52; font-size: 2rem;">Ashik VM</h4>
+                            <p class="text-secondary-emphasis fs-5">CEO & Founder</p>
+                        </div>
+                        <div class="col-md-8">
+                            <h2 class="section-title" style="margin-top: 0;">Message from the CEO – A Vision for Tomorrow</h2>
+                            <blockquote class="blockquote-professional">
+                                <p>"Technology is more than tools; it's the bridge to a smarter, connected world. At Asquare Technologies, we are committed to pushing the boundaries of innovation, ensuring that every solution we create empowers people and businesses alike."</p>
+                            </blockquote>
+                            <div class="d-flex flex-wrap align-items-center mt-5">
+                                <a href="https://www.linkedin.com/posts/bhavesh-arora-11b0a319b_american-express-hiring-data-analyst-freshers-share-7436725613631164416-n8jm?utm_source=social_share_send&utm_medium=android_app&rcm=ACoAAEieVV8BkXQp8GUTr1LBVQkzYYeqKGYpLa4&utm_campaign=copy_link" class="linkedin-professional" target="_blank">
+                                    <i class="fab fa-linkedin"></i> Ashik VM's Profile
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ashraf Card -->
+                <div class="ceo-card">
+                    <div class="row align-items-center g-5">
+                        <div class="col-md-4 text-center">
+                            <img src="Ashraf.png" alt="Ashraf" class="ceo-img-square">
+                            <h4 class="mt-4 fw-bold" style="color: #832b52; font-size: 2rem;">Ashraf</h4>
+                            <p class="text-secondary-emphasis fs-5">Co-Founder</p>
+                        </div>
+                        <div class="col-md-8">
+                            <h2 class="section-title" style="margin-top: 0;">Message from the Co-Founder</h2>
+                            <blockquote class="blockquote-professional">
+                                <p>"Great things are never done by one person, they are done by a team of people. At Asquare, we build not just technology, but trust, talent, and tomorrow's leaders."</p>
+                            </blockquote>
+                            <div class="d-flex flex-wrap align-items-center mt-5">
+                                <a href="#" class="linkedin-professional" target="_blank">
+                                    <i class="fab fa-linkedin"></i> Ashraf's Profile
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- MEET OUR TEAM -->
+        <section class="section-padding">
+            <div class="container text-center">
+                <h2 class="section-title" style="display: inline-block;">MEET OUR TEAM</h2>
+                <div class="d-flex gap-4 flex-wrap justify-content-center mt-5">
+                    <button class="team-btn" id="emp1">EMPLOYEES</button>
+                    <button class="team-btn" id="emp2">ASQUARE EVENTS</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- COUNTER SECTION -->
+        <section class="section-padding pt-0">
+            <div class="container">
+                <div class="stats-container">
+                    <div class="text-center mb-5">
+                        <h2 class="section-title" style="font-size: 2.5rem;">Why prefer us</h2>
+                        <p class="fs-5" style="color: #7b4e63;">Grow Your Skills To Advance Your Career Path</p>
+                    </div>
+                    <div class="row g-4">
+                        <div class="col-md-2-4 col-sm-4 col-6">
+                            <div class="stat-item text-center">
+                                <div class="stat-number" id="google-reviews" data-target="500">0</div>
+                                <div class="stat-label">GOOGLE REVIEWS</div>
+                            </div>
+                        </div>
+                        <div class="col-md-2-4 col-sm-4 col-6">
+                            <div class="stat-item text-center">
+                                <div class="stat-number" id="technologies" data-target="15">0</div>
+                                <div class="stat-label">TECHNOLOGIES</div>
+                            </div>
+                        </div>
+                        <div class="col-md-2-4 col-sm-4 col-6">
+                            <div class="stat-item text-center">
+                                <div class="stat-number" id="placements" data-target="1000">0</div>
+                                <div class="stat-label">PLACEMENTS</div>
+                            </div>
+                        </div>
+                        <div class="col-md-2-4 col-sm-4 col-6">
+                            <div class="stat-item text-center">
+                                <div class="stat-number" id="companies" data-target="420">0</div>
+                                <div class="stat-label">COMPANIES</div>
+                            </div>
+                        </div>
+                        <div class="col-md-2-4 col-sm-4 col-6">
+                            <div class="stat-item text-center">
+                                <div class="stat-number" id="students-trained" data-target="1000">0<span class="plus">+</span></div>
+                                <div class="stat-label">STUDENTS TRAINED</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MISSION & VISION -->
+        <section class="section-padding">
+            <div class="container">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="mission-card">
+                            <h3 class="fw-bold" style="color: #832b52;"><i class="fas fa-bullseye me-2" style="color: #b13e6b;"></i> Mission – Driving Digital Excellence</h3>
+                            <p class="mt-3 text-dark-muted">Our mission is to empower businesses and professionals through intelligent, scalable, and reliable technology solutions and training programs. We aim to create software, platforms, and learning experiences that enhance efficiency, foster innovation, and deliver measurable results for clients and learners worldwide.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mission-card">
+                            <h3 class="fw-bold" style="color: #832b52;"><i class="fas fa-eye me-2" style="color: #b13e6b;"></i> Vision – Shaping the Future of Technology</h3>
+                            <p class="mt-3 text-dark-muted">We envision a future where technology seamlessly integrates with everyday life, creating smarter systems, enhanced experiences, and sustainable growth. Asquare Technologies strives to lead this transformation by being at the forefront of innovation, ethical practices, and customer‑focused development.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CORE VALUES -->
+        <section class="section-padding bg-pink-soft">
+            <div class="container">
+                <h2 class="section-title">Our Core Values</h2>
+                <div class="row g-4">
+                    <div class="col-lg-2 col-md-4 col-6">
+                        <div class="card-value"><i class="fas fa-lightbulb"></i><h5 class="fw-bold mt-2">Innovation</h5><p class="small text-secondary">Constantly exploring new ideas.</p></div>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-6">
+                        <div class="card-value"><i class="fas fa-handshake"></i><h5 class="fw-bold mt-2">Integrity</h5><p class="small text-secondary">Honesty & transparency.</p></div>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-6">
+                        <div class="card-value"><i class="fas fa-medal"></i><h5 class="fw-bold mt-2">Excellence</h5><p class="small text-secondary">Exceed expectations.</p></div>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-6">
+                        <div class="card-value"><i class="fas fa-users"></i><h5 class="fw-bold mt-2">Collaboration</h5><p class="small text-secondary">Strong partnerships.</p></div>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-6">
+                        <div class="card-value"><i class="fas fa-leaf"></i><h5 class="fw-bold mt-2">Sustainability</h5><p class="small text-secondary">Long‑term impact.</p></div>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-6">
+                        <div class="card-value"><i class="fas fa-chart-line"></i><h5 class="fw-bold mt-2">Agility</h5><p class="small text-secondary">Fast & adaptive.</p></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- WHY CHOOSE US -->
+        <section class="section-padding">
+            <div class="container">
+                <h2 class="section-title">Why Choose Us – Beyond Conventional Tech</h2>
+                <div class="p-5 rounded-5" style="background: rgba(255,245,248,0.8); backdrop-filter: blur(4px);">
+                    <p class="fs-5" style="color: #5a3b49;">We don't just provide technology; we create experiences that transform businesses and careers. By combining creative thinking, robust engineering, and strategic insight, Asquare Technologies delivers solutions that are customized, scalable, and future‑ready, whether for digital transformation, analytics training, or professional development.</p>
+                    <div class="row mt-5 g-4">
+                        <div class="col-md-3 col-6"><i class="fas fa-check-circle me-2" style="color:#b13e6b;"></i> Customized</div>
+                        <div class="col-md-3 col-6"><i class="fas fa-check-circle me-2" style="color:#b13e6b;"></i> Scalable</div>
+                        <div class="col-md-3 col-6"><i class="fas fa-check-circle me-2" style="color:#b13e6b;"></i> Future‑ready</div>
+                        <div class="col-md-3 col-6"><i class="fas fa-check-circle me-2" style="color:#b13e6b;"></i> Human‑centric</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="footer-professional">
+            <div class="container">
+                <div class="row gy-4">
+                    <div class="col-md-5">
+                        <h4 class="fw-bold text-white">Asquare Technologies</h4>
+                        <p class="text-white-50">Innovating beyond boundaries — software, training, and transformation.</p>
+                        <i class="fas fa-map-pin me-2"></i> Kochi <br>
+                        <i class="fas fa-envelope me-2 mt-2"></i> info@asquaretechnologiesweb.com
+                    </div>
+                    <div class="col-md-3 offset-md-1">
+                        <h5 class="text-white">Explore</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="#who-we-are">Who we are</a></li>
+                            <li><a href="#ceo-message">CEO message</a></li>
+                            <li><a href="#core-values">Core values</a></li>
+                            <li><a href="#why-choose">Why choose us</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3">
+                        <h5 class="text-white">Connect</h5>
+                        <a href="#" class="text-white me-3"><i class="fab fa-linkedin fa-2x"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-twitter fa-2x"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-github fa-2x"></i></a>
+                        <hr class="bg-light opacity-25">
+                        <p class="small mb-0">© <span id="current-year"></span> Asquare — turning aspirations</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Spider Canvas -->
+    <script>
+        (function() {
+            const canvas = document.getElementById('spider-canvas');
+            const ctx = canvas.getContext('2d');
+            const { sin, cos, PI, hypot, min, max } = Math;
+            const rnd = (x = 1, dx = 0) => Math.random() * x + dx;
+            const lerp = (a, b, t) => a + (b - a) * t;
+            const many = (n, fn) => Array.from({ length: n }, (_, i) => fn(i));
+            function noise(x, y, t = 101) {
+                let w0 = sin(0.3 * x + 1.4 * t + 2.0 + 2.5 * sin(0.4 * y + -1.3 * t + 1.0));
+                let w1 = sin(0.2 * y + 1.5 * t + 2.8 + 2.3 * sin(0.5 * x + -1.2 * t + 0.5));
+                return w0 + w1;
+            }
+            function drawCircle(x, y, r) {
+                ctx.beginPath();
+                ctx.ellipse(x, y, r, r, 0, 0, PI * 2);
+                ctx.fill();
+            }
+            function drawLine(x0, y0, x1, y1) {
+                ctx.beginPath();
+                ctx.moveTo(x0, y0);
+                many(40, (i) => {
+                    let t = (i + 1) / 40;
+                    let x = lerp(x0, x1, t);
+                    let y = lerp(y0, y1, t);
+                    let k = noise(x / 8 + x0, y / 8 + y0) * 1.8;
+                    ctx.lineTo(x + k, y + k);
+                });
+                ctx.stroke();
+            }
+            function spawn() {
+                const pts = many(200, () => ({
+                    x: rnd(innerWidth),
+                    y: rnd(innerHeight),
+                    len: 0,
+                    r: 0
+                }));
+                const pts2 = many(7, (i) => ({
+                    x: cos((i / 7) * PI * 2),
+                    y: sin((i / 7) * PI * 2)
+                }));
+                let seed = rnd(100);
+                let tx = rnd(innerWidth);
+                let ty = rnd(innerHeight);
+                let x = rnd(innerWidth);
+                let y = rnd(innerHeight);
+                let kx = rnd(0.4, 0.4);
+                let ky = rnd(0.4, 0.4);
+                let walkRadius = { x: rnd(40, 30), y: rnd(40, 30) };
+                let r = innerWidth / rnd(120, 180);
+                function paintPt(pt) {
+                    pts2.forEach((pt2) => {
+                        if (!pt.len) return;
+                        drawLine(
+                            lerp(x + pt2.x * r, pt.x, pt.len * pt.len),
+                            lerp(y + pt2.y * r, pt.y, pt.len * pt.len),
+                            x + pt2.x * r,
+                            y + pt2.y * r
+                        );
+                    });
+                    drawCircle(pt.x, pt.y, pt.r);
+                }
+                return {
+                    follow(mx, my) { tx = mx; ty = my; },
+                    tick(t) {
+                        const selfMoveX = cos(t * kx + seed) * walkRadius.x;
+                        const selfMoveY = sin(t * ky + seed) * walkRadius.y;
+                        let fx = tx + selfMoveX;
+                        let fy = ty + selfMoveY;
+                        x += min(innerWidth / 120, (fx - x) / 12);
+                        y += min(innerWidth / 120, (fy - y) / 12);
+                        let i = 0;
+                        pts.forEach((pt) => {
+                            const dx = pt.x - x, dy = pt.y - y;
+                            const len = hypot(dx, dy);
+                            let r = min(2, innerWidth / len / 6);
+                            pt.t = 0;
+                            const increasing = len < innerWidth / 12 && (i++) < 8;
+                            let dir = increasing ? 0.1 : -0.1;
+                            if (increasing) r *= 1.5;
+                            pt.r = r;
+                            pt.len = max(0, min(pt.len + dir, 1));
+                            paintPt(pt);
+                        });
+                    }
+                };
+            }
+            const spiders = many(2, spawn);
+            window.addEventListener('pointermove', (e) => {
+                spiders.forEach(sp => sp.follow(e.clientX, e.clientY));
+            });
+            window.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                if (e.touches.length) {
+                    spiders.forEach(sp => sp.follow(e.touches[0].clientX, e.touches[0].clientY));
+                }
+            }, { passive: false });
+            let w, h;
+            requestAnimationFrame(function anim(t) {
+                if (w !== innerWidth) { w = canvas.width = innerWidth; }
+                if (h !== innerHeight) { h = canvas.height = innerHeight; }
+                ctx.fillStyle = "#fdf2f6";
+                ctx.fillRect(0, 0, w, h);
+                ctx.fillStyle = "#b13e6b";
+                ctx.strokeStyle = "#b13e6b";
+                ctx.lineWidth = 1.4;
+                ctx.globalAlpha = 0.55;
+                spiders.forEach(sp => sp.tick(t / 1000));
+                ctx.globalAlpha = 1.0;
+                requestAnimationFrame(anim);
+            });
+            window.addEventListener('load', () => {
+                spiders.forEach(sp => sp.follow(innerWidth / 2, innerHeight / 2));
+            });
+        })();
+    </script>
+
+    <!-- Counter + Year + Buttons -->
+    <script>
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+        const counters = document.querySelectorAll('.stat-number');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const counter = entry.target;
+                    const update = () => {
+                        const target = parseInt(counter.getAttribute('data-target'));
+                        let current = parseInt(counter.innerText) || 0;
+                        if (counter.id === 'students-trained' && counter.innerText.includes('+'))
+                            current = parseInt(counter.innerText.split('+')[0]) || 0;
+                        const increment = Math.ceil(target / 18);
+                        if (current < target) {
+                            let next = current + increment;
+                            if (next > target) next = target;
+                            if (counter.id === 'students-trained') {
+                                counter.innerHTML = next + '<span class="plus">+</span>';
+                            } else {
+                                counter.innerText = next;
+                            }
+                            setTimeout(update, 70);
+                        } else {
+                            if (counter.id === 'students-trained') {
+                                counter.innerHTML = target + '<span class="plus">+</span>';
+                            } else {
+                                counter.innerText = target;
+                            }
+                        }
+                    };
+                    update();
+                    observer.unobserve(counter);
+                }
+            });
+        }, { threshold: 0.4 });
+        counters.forEach(c => observer.observe(c));
+
+        document.getElementById('emp1').addEventListener('click', () => {
+            window.location.href = 'https://whitehats666.github.io/meetourteam/';
+        });
+        document.getElementById('emp2').addEventListener('click', () => {
+            alert('📅 ASQUARE EVENTS — upcoming tech events');
+        });
+    </script>
+</body>
+</html>
